@@ -1,11 +1,11 @@
 // WebSocket server template.
 // Public: GET / (launch probe), GET /generate_204 (acceptance check).
-// WebSocket on path /vless. Auth is the UUID in the header, from VLESS_UUID.
+// WebSocket on path /ws. Auth is the UUID in the header, from SERVER_UUID.
 // Listens on 0.0.0.0:$PORT (platform sets $PORT). Uses the `ws` package.
 // The /flclash.yaml subscription derives the hostname from the request Host
 // header, so it stays correct no matter what domain the platform assigns.
 //
-// Set VLESS_UUID in the platform env vars. Do not run with the placeholder.
+// Set SERVER_UUID in the platform env vars. Do not run with the placeholder.
 
 const http = require('http');
 const net = require('net');
@@ -13,8 +13,8 @@ const { WebSocketServer } = require('ws');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0';
-const WS_PATH = process.env.VLESS_PATH || '/vless';
-const UUID = process.env.VLESS_UUID || '11111111-2222-3333-4444-555555555555';
+const WS_PATH = process.env.SERVER_PATH || '/ws';
+const UUID = process.env.SERVER_UUID || '11111111-2222-3333-4444-555555555555';
 const UUID_BYTES = Buffer.from(UUID.replace(/-/g, ''), 'hex');
 const NODE_NAME = 'my-server';
 
@@ -29,7 +29,7 @@ function flclashYaml(host) {
     servername: ${host}
     network: ws
     ws-opts:
-      path: /vless
+      path: ${WS_PATH}
       headers:
         Host: ${host}
 `;
